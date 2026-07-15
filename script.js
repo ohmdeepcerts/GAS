@@ -494,6 +494,18 @@ function deleteCert(id) {
 // .cert-* CSS classes in style.css are matched against the official
 // Landlord/Homeowner Gas Safety Record template and should be treated as a
 // fixed document layout - see project notes before changing structure here.
+
+// BUGFIX: date inputs always store/return ISO format (YYYY-MM-DD), but the
+// reference certificate uses UK format (DD/MM/YYYY) everywhere. This was
+// printing "2026-07-15" instead of "15/07/2026" on every date on the cert.
+function formatDateUK(isoDate) {
+    if (!isoDate) return '';
+    const parts = isoDate.split('-');
+    if (parts.length !== 3) return isoDate;
+    const [y, m, d] = parts;
+    return `${d}/${m}/${y}`;
+}
+
 function compileAndShowPDFPreview() {
     const printTarget = document.getElementById('print-canvas-target');
 
@@ -533,7 +545,7 @@ function compileAndShowPDFPreview() {
             <div class="cert-topbar">
                 <div class="cert-topbar-seg">
                     <span class="cert-topbar-label">Date</span>
-                    <span class="cert-topbar-value">${document.getElementById('w-cert-date').value}</span>
+                    <span class="cert-topbar-value">${formatDateUK(document.getElementById('w-cert-date').value)}</span>
                 </div>
                 <div class="cert-topbar-seg">
                     <span class="cert-topbar-label">Gas Safe Register No</span>
@@ -545,7 +557,7 @@ function compileAndShowPDFPreview() {
                 </div>
                 <div class="cert-topbar-seg">
                     <span class="cert-topbar-label">Expires</span>
-                    <span class="cert-topbar-value">${gasExpiry || '&nbsp;'}</span>
+                    <span class="cert-topbar-value">${formatDateUK(gasExpiry) || '&nbsp;'}</span>
                 </div>
                 <div class="cert-topbar-seg">
                     <span class="cert-topbar-label">Serial No</span>
@@ -593,7 +605,7 @@ function compileAndShowPDFPreview() {
         <div class="cert-mid-row">
             <div class="cert-defects-col">
                 <div class="cert-box-header">Defects Identified</div>
-                <div class="cert-defects-attention-label">Any items requiring attention</div>
+                <div class="cert-defects-attention-label">Warning Notice Issued?</div>
                 <div class="cert-defects-list">
                     ${defectRows.map((d, i) => `
                         <div class="cert-defect-row">
@@ -662,7 +674,7 @@ function compileAndShowPDFPreview() {
             <div class="cert-attention-box">
                 <div class="cert-attention-title">ATTENTION</div>
                 <div class="cert-attention-sub">Next safety check due by:</div>
-                <div class="cert-attention-date">${document.getElementById('w-next-due-date').value}</div>
+                <div class="cert-attention-date">${formatDateUK(document.getElementById('w-next-due-date').value)}</div>
             </div>
         </div>
 
@@ -706,44 +718,82 @@ function compileAndShowPDFPreview() {
                 </tr>
             </thead>
             <tbody>
-                ${activeDraftApplianceList.map((app, index) => `
-                    <tr class="cert-appliance-row">
-                        <td>${index + 1}</td>
-                        <td>${app.location}</td>
-                        <td>${app.type}</td>
-                        <td>${app.manufacturer}</td>
-                        <td>${app.model}</td>
-                        <td>${app.owned}</td>
-                        <td>${app.inspected}</td>
-                        <td>${app.flueType || 'RS'}</td>
-                        <td>${app.pressure || '20 Mbar'}</td>
-                        <td>${app.safety || 'Pass'}</td>
-                        <td>${app.ventilation || 'Pass'}</td>
-                        <td>${app.visual || 'Pass'}</td>
-                        <td>${app.flueFlow || 'Pass'}</td>
-                        <td>${app.coAnalysis || '.0009'}</td>
-                        <td>${app.serviced || 'No'}</td>
-                        <td>${app.safeToUse || 'Yes'}</td>
-                    </tr>
-                    <tr class="cert-coalarm-row">
-                        <td colspan="16">
-                            <div class="cert-coalarm-block">
-                                <div class="cert-coalarm-item">
-                                    <div class="cert-coalarm-label">Approved CO alarm fitted?</div>
-                                    <div class="cert-coalarm-value">${app.coAlarmFitted || 'N/A'}</div>
-                                </div>
-                                <div class="cert-coalarm-item">
-                                    <div class="cert-coalarm-label">Is CO alarm In Date?</div>
-                                    <div class="cert-coalarm-value">${app.coAlarmInDate || 'N/A'}</div>
-                                </div>
-                                <div class="cert-coalarm-item">
-                                    <div class="cert-coalarm-label">CO alarm test satisfactory?</div>
-                                    <div class="cert-coalarm-value">${app.coAlarmSatisfactory || 'N/A'}</div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('')}
+                ${(() => {
+                    // BUGFIX: the real certificate template always shows a minimum of
+                    // 5 appliance row slots, padding with blank rows when there are
+                    // fewer actual appliances. Previously only real appliances were
+                    // rendered, so short certificates looked visually different from
+                    // the reference template.
+                    const minSlots = 5;
+                    const slots = activeDraftApplianceList.slice();
+                    while (slots.length < minSlots) slots.push(null);
+
+                    return slots.map((app, index) => {
+                        if (!app) {
+                            return `
+                                <tr class="cert-appliance-row">
+                                    <td colspan="16">&nbsp;</td>
+                                </tr>
+                                <tr class="cert-coalarm-row">
+                                    <td colspan="16">
+                                        <div class="cert-coalarm-block">
+                                            <div class="cert-coalarm-item">
+                                                <div class="cert-coalarm-label">Approved CO alarm fitted?</div>
+                                                <div class="cert-coalarm-value">&nbsp;</div>
+                                            </div>
+                                            <div class="cert-coalarm-item">
+                                                <div class="cert-coalarm-label">Is CO alarm In Date?</div>
+                                                <div class="cert-coalarm-value">&nbsp;</div>
+                                            </div>
+                                            <div class="cert-coalarm-item">
+                                                <div class="cert-coalarm-label">CO alarm test satisfactory?</div>
+                                                <div class="cert-coalarm-value">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                        return `
+                            <tr class="cert-appliance-row">
+                                <td>${index + 1}</td>
+                                <td>${app.location}</td>
+                                <td>${app.type}</td>
+                                <td>${app.manufacturer}</td>
+                                <td>${app.model}</td>
+                                <td>${app.owned}</td>
+                                <td>${app.inspected}</td>
+                                <td>${app.flueType || 'RS'}</td>
+                                <td>${app.pressure || '20 Mbar'}</td>
+                                <td>${app.safety || 'Pass'}</td>
+                                <td>${app.ventilation || 'Pass'}</td>
+                                <td>${app.visual || 'Pass'}</td>
+                                <td>${app.flueFlow || 'Pass'}</td>
+                                <td>${app.coAnalysis || '.0009'}</td>
+                                <td>${app.serviced || 'No'}</td>
+                                <td>${app.safeToUse || 'Yes'}</td>
+                            </tr>
+                            <tr class="cert-coalarm-row">
+                                <td colspan="16">
+                                    <div class="cert-coalarm-block">
+                                        <div class="cert-coalarm-item">
+                                            <div class="cert-coalarm-label">Approved CO alarm fitted?</div>
+                                            <div class="cert-coalarm-value">${app.coAlarmFitted || 'N/A'}</div>
+                                        </div>
+                                        <div class="cert-coalarm-item">
+                                            <div class="cert-coalarm-label">Is CO alarm In Date?</div>
+                                            <div class="cert-coalarm-value">${app.coAlarmInDate || 'N/A'}</div>
+                                        </div>
+                                        <div class="cert-coalarm-item">
+                                            <div class="cert-coalarm-label">CO alarm test satisfactory?</div>
+                                            <div class="cert-coalarm-value">${app.coAlarmSatisfactory || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                })()}
             </tbody>
         </table>
 
