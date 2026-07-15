@@ -635,8 +635,8 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     .pdf-page {
         width: 297mm;
         height: 210mm;
-        padding: 10mm 12mm;
-        background-color: #fbf9cf !important; /* Authentic pale yellow background */
+        padding: 0;
+        background-color: #fff9bb !important; /* measured exact page background color */
         page-break-after: always;
         position: relative;
         overflow: hidden;
@@ -649,23 +649,39 @@ h1, h2, h3 { letter-spacing: -0.01em; }
         color: #000;
     }
 
+    /* Wraps everything below the header. The header is full-bleed (measured
+       0mm margin on top/left/right); every section below it shares a
+       measured 9.2mm left/right margin instead. */
+    .cert-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0 9.2mm 6mm;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
     /* ---------- PAGE 1: HEADER ---------- */
+    /* Measured: header is a full-bleed black banner exactly 33.4mm tall
+       (0mm - 33.4mm of the 210mm page height), touching the top/left/right
+       page edges with zero margin. */
     .cert-header {
         background-color: #000 !important;
         color: #fff !important;
         position: relative;
-        padding: 6px 10px 8px;
-        margin-bottom: 6px;
-        min-height: 24mm;
+        padding: 3mm 10mm 3mm 9.2mm;
+        height: 33.4mm;
+        flex: 0 0 33.4mm;
+        box-sizing: border-box;
     }
 
     .cert-topbar {
         position: absolute;
-        top: 6px;
-        right: 8px;
+        top: 5.6mm;
+        right: 3mm;
         display: flex;
         gap: 6px;
-        background: #fbf010 !important;
+        background: #ffff00 !important;
         padding: 3px 6px;
         border-radius: 2px;
     }
@@ -705,22 +721,30 @@ h1, h2, h3 { letter-spacing: -0.01em; }
 
     .cert-company-name {
         font-size: 22px;
-        padding-top: 16px;
+        margin-top: 12.1mm;
         font-weight: bold;
+        line-height: 1;
     }
 
     .cert-subtitle {
-        font-size: 14px;
+        font-size: 15px;
         font-weight: normal;
+        margin-top: 3px;
+        line-height: 1;
     }
 
     /* ---------- PAGE 1: DETAILS ROW (3-column) ---------- */
+    /* Measured: 25.3mm tall, touching the header above (1mm gap) and the
+       Work Carried Out row directly below (no gap - shared border). */
     .cert-details-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         border: 1px solid #000;
         background: #e2e2e2 !important;
-        margin-bottom: 6px;
+        margin-top: 1mm;
+        height: 25.3mm;
+        flex: 0 0 25.3mm;
+        box-sizing: border-box;
     }
 
     .cert-details-col {
@@ -745,7 +769,6 @@ h1, h2, h3 { letter-spacing: -0.01em; }
         padding: 5px;
         border: 1px solid #ccc;
         font-size: 9.5px;
-        min-height: 22mm;
         flex-grow: 1;
         position: relative;
     }
@@ -770,9 +793,15 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     /* ---------- PAGE 1: WORK CARRIED OUT ---------- */
+    /* Measured: 29.6mm tall, touching sections above and below directly. */
     .cert-work-row {
         border: 1px solid #000;
-        margin-bottom: 6px;
+        border-top: none;
+        height: 29.6mm;
+        flex: 0 0 29.6mm;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
     }
 
     .cert-work-header-strip {
@@ -787,34 +816,40 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     .cert-work-body {
         display: flex;
         background: #e2e2e2 !important;
+        flex: 1;
+        /* Measured: notes:gap:blank ratio approx 74 : 8.5 : 17.5 */
+        gap: 8.5%;
     }
 
     .cert-work-notes {
-        flex: 2.4;
+        flex: 0 0 74%;
         background: #fff !important;
-        border-right: 1px solid #000;
         padding: 5px;
         font-size: 9.5px;
-        min-height: 16mm;
         white-space: pre-line;
     }
 
     .cert-work-blank {
-        flex: 1;
+        flex: 0 0 17.5%;
         background: #fff !important;
-        min-height: 16mm;
     }
 
     /* ---------- PAGE 1: DEFECTS + PIPEWORK ---------- */
+    /* Measured: 39.1mm tall, touching sections above/below. Defects section
+       ~134mm wide, pipework section ~141mm wide (roughly equal, NOT 60/40). */
     .cert-mid-row {
         display: flex;
-        gap: 6px;
-        margin-bottom: 6px;
+        height: 39.1mm;
+        flex: 0 0 39.1mm;
+        box-sizing: border-box;
+        gap: 1mm;
     }
 
     .cert-defects-col {
-        flex: 1.5;
+        flex: 0 0 134mm;
         border: 1px solid #000;
+        border-top: none;
+        overflow: hidden;
     }
 
     .cert-defects-attention-label {
@@ -835,7 +870,8 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     .cert-defect-num {
-        width: 16px;
+        /* Measured: ~10mm wide */
+        flex: 0 0 10mm;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -845,14 +881,17 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     .cert-defect-desc {
-        flex-grow: 1;
+        /* Measured: ~98mm wide */
+        flex: 0 0 98mm;
         padding: 3px 6px;
         font-size: 9px;
         border-right: 1px solid #000;
+        overflow: hidden;
     }
 
     .cert-defect-attention {
-        width: 55px;
+        /* Measured: ~26mm wide */
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -864,15 +903,18 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     .cert-pipework-col {
-        flex: 1;
+        flex: 0 0 141mm;
         border: 1px solid #000;
+        border-top: none;
     }
 
     .cert-pipework-table {
         width: 100%;
+        height: 100%;
         border-collapse: collapse;
         text-align: center;
         font-size: 8.5px;
+        table-layout: fixed;
     }
 
     .cert-pipework-table th {
@@ -880,6 +922,7 @@ h1, h2, h3 { letter-spacing: -0.01em; }
         border: 1px solid #000;
         padding: 3px 2px;
         font-weight: 600;
+        width: 20%;
     }
 
     .cert-pipework-table td {
@@ -891,17 +934,23 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     /* ---------- PAGE 1: REMEDIAL / SIGN-OFF / ATTENTION ---------- */
+    /* Measured: 51.1mm tall, touching section above. Column ratio
+       remedial:signoff:attention ~ 137mm : 105mm : 36mm */
     .cert-bottom-row {
         display: flex;
-        gap: 6px;
-        flex-grow: 1;
+        gap: 1mm;
+        height: 51.1mm;
+        flex: 0 0 51.1mm;
+        box-sizing: border-box;
     }
 
     .cert-remedial-col {
-        flex: 1.5;
+        flex: 0 0 137mm;
         border: 1px solid #000;
+        border-top: none;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
     }
 
     .cert-remedial-sub {
@@ -917,10 +966,12 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     .cert-signoff-col {
-        flex: 1.3;
+        flex: 0 0 105mm;
         border: 1px solid #000;
+        border-top: none;
         background: #fff !important;
         padding: 5px;
+        overflow: hidden;
     }
 
     .cert-signoff-title {
@@ -965,11 +1016,12 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     .cert-attention-box {
-        flex: 0 0 32mm;
+        flex: 0 0 36mm;
         border: 3px solid #000;
+        border-top: 3px solid #000;
         text-align: center;
         background: #fff !important;
-        align-self: flex-start;
+        align-self: stretch;
     }
 
     .cert-attention-title {
@@ -993,12 +1045,20 @@ h1, h2, h3 { letter-spacing: -0.01em; }
     }
 
     /* ---------- PAGE 1: DISCLAIMER + FOOTER ---------- */
+    /* Measured: 4.3mm gap, then disclaimer 17mm tall, then footer near the
+       very bottom of the page. */
     .cert-disclaimer {
-        background: #fbf010 !important;
+        background: #faee31 !important;
         text-align: center;
         font-size: 8px;
         padding: 4px 20px;
-        margin-top: 6px;
+        margin-top: 4.3mm;
+        height: 17mm;
+        flex: 0 0 17mm;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .cert-footer {
@@ -1006,7 +1066,8 @@ h1, h2, h3 { letter-spacing: -0.01em; }
         justify-content: space-between;
         font-size: 7.5px;
         font-weight: bold;
-        margin-top: 4px;
+        margin-top: auto;
+        padding-top: 3px;
     }
 
     /* ---------- PAGE 2 ---------- */
@@ -1021,9 +1082,12 @@ h1, h2, h3 { letter-spacing: -0.01em; }
         border: 1px solid #000;
         font-size: 8px;
         text-align: center;
+        table-layout: fixed;
     }
 
     .cert-appliance-table th, .cert-appliance-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
         border: 1px solid #000;
         padding: 3px;
     }
