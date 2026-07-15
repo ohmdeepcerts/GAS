@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Safety Record Certificate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Controls UI (Hidden when printing) -->
+    <div class="controls no-print">
+        <button onclick="window.print()">Download PDF / Print</button>
+        <button onclick="saveCertificate()">Save Certificate</button>
+        <button onclick="loadCertificate()">Load Certificate</button>
+        <label class="upload-btn">
+            Upload Logo
+            <input type="file" id="logoUpload" accept="image/*">
+        </label>
+        <span id="save-status"></span>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page" id="page-1">
+        <!-- Header -->
+        <header class="header-black">
+            <div class="top-yellow-bar">
+                <div class="yb-item"><strong>Date</strong> <input type="text" id="p1-date" value="13/07/2026"></div>
+                <div class="yb-item"><strong>Gas Safe<br>Register No</strong> <input type="text" id="p1-gs-reg-no" value="6053462"></div>
+                <div class="yb-item"><strong>Gas Safe Register<br>Licence Number</strong> <input type="text" id="p1-gs-lic-no" value="567294"></div>
+                <div class="yb-item"><strong>Expires:</strong> <input type="text" id="p1-expires"></div>
+                <div class="yb-item serial-no"><strong>Serial No</strong> <input type="text" id="p1-serial" value="64678627. 75 B Friary Road"></div>
+            </div>
+            
+            <div class="header-title-container">
+                <div class="logo-container">
+                    <!-- Default text logo if no image uploaded -->
+                    <img id="company-logo" src="" alt="" style="display: none;">
+                    <h1 class="company-name" id="logo-text">M K Heating Ltd</h1>
+                </div>
+                <h2 class="document-title">LANDLORD/HOMEOWNER GAS SAFETY RECORD</h2>
+            </div>
+        </header>
+
+        <!-- Section 1: Details -->
+        <div class="grid-3-col section-row">
+            <!-- Landlord Details -->
+            <div class="section-box grey-bg">
+                <div class="section-header">DETAILS OF LANDLORD/HOMEOWNER (or agent where appropriate)</div>
+                <div class="section-content">
+                    <textarea class="white-box" id="p1-landlord-address">Wentworth Estates&#10;163-165 Ilford Lane&#10;Ilford, Essex</textarea>
+                    <div class="postcode-row">
+                        <input type="text" class="white-box postcode" id="p1-landlord-postcode" value="IG1 2RR">
+                    </div>
+                </div>
+            </div>
+            <!-- Installation Address -->
+            <div class="section-box grey-bg">
+                <div class="section-header">ADDRESS OF THE INSTALLATION</div>
+                <div class="section-content">
+                    <textarea class="white-box" id="p1-install-address">75 B Friary Road&#10;London</textarea>
+                    <div class="postcode-row">
+                        <input type="text" class="white-box postcode" id="p1-install-postcode" value="SE15 1QS">
+                    </div>
+                </div>
+            </div>
+            <!-- Business Details -->
+            <div class="section-box grey-bg">
+                <div class="section-header">DETAILS OF REGISTERED BUSINESS</div>
+                <div class="section-content business-grid">
+                    <div class="biz-left">
+                        <textarea class="white-box" id="p1-biz-address">M K Heating Ltd&#10;127 Woodland Road&#10;Ilford&#10;Essex</textarea>
+                    </div>
+                    <div class="biz-right">
+                        <div class="biz-phone-row"><strong>Phone:</strong> <input type="text" class="white-box" id="p1-biz-phone"></div>
+                    </div>
+                    <div class="biz-bottom">
+                        <strong>Email:</strong> <input type="text" class="white-box" id="p1-biz-email">
+                        <input type="text" class="white-box postcode" id="p1-biz-postcode" value="IG1 1JP">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Work Carried Out -->
+        <div class="section-row">
+            <div class="section-box grey-bg full-width">
+                <div class="section-header inline-header">DETAILS OF WORK CARRIED OUT</div>
+                <div class="section-content work-carried-content">
+                    <textarea class="white-box large-textarea" id="p1-work-carried">N/A</textarea>
+                    <textarea class="white-box side-textarea" id="p1-work-notes"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Defects & Pipework -->
+        <div class="grid-2-col section-row">
+            <!-- Defects -->
+            <div class="section-box grey-bg defects-section">
+                <div class="section-header inline-header">DEFECTS IDENTIFIED</div>
+                <div class="defects-warning-header">Warning Notice Issued?</div>
+                <div class="defects-table">
+                    <div class="defect-row"><div class="def-num">1</div><input type="text" class="white-box def-text" id="def-1" value="N/A"><input type="text" class="white-box def-warn red-text" id="def-warn-1" value="N/A"></div>
+                    <div class="defect-row"><div class="def-num">2</div><input type="text" class="white-box def-text" id="def-2" value="N/A"><input type="text" class="white-box def-warn red-text" id="def-warn-2" value="N/A"></div>
+                    <div class="defect-row"><div class="def-num">3</div><input type="text" class="white-box def-text" id="def-3" value="N/A"><input type="text" class="white-box def-warn red-text" id="def-warn-3" value="N/A"></div>
+                    <div class="defect-row"><div class="def-num">4</div><input type="text" class="white-box def-text" id="def-4" value="N/A"><input type="text" class="white-box def-warn red-text" id="def-warn-4" value="N/A"></div>
+                    <div class="defect-row"><div class="def-num">5</div><input type="text" class="white-box def-text" id="def-5" value="N/A"><input type="text" class="white-box def-warn red-text" id="def-warn-5" value="N/A"></div>
+                </div>
+            </div>
+            <!-- Pipework -->
+            <div class="section-box grey-bg pipework-section">
+                <div class="section-header">GAS INSTALLATION PIPEWORK</div>
+                <table class="pipework-table">
+                    <tr>
+                        <th>Pipework visual<br>inspection</th>
+                        <th>Outcome of gas<br>supply pipework<br>visual inspection</th>
+                        <th>Is the Emergency<br>Control Valve access<br>satisfactory?</th>
+                        <th>Outcome of gas<br>tightness test?</th>
+                        <th>Is protective<br>equipotential<br>bonding<br>satisfactory?</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="white-box center-text" id="pipe-1" value="✓"></td>
+                        <td><input type="text" class="white-box center-text" id="pipe-2" value="✓"></td>
+                        <td><input type="text" class="white-box center-text" id="pipe-3" value="✓"></td>
+                        <td><input type="text" class="white-box center-text" id="pipe-4" value="✓"></td>
+                        <td><input type="text" class="white-box center-text" id="pipe-5" value="✓"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 4: Remedial Action & Signatures -->
+        <div class="grid-2-col section-row">
+            <!-- Remedial Action -->
+            <div class="section-box grey-bg remedial-section">
+                <div class="remedial-header">
+                    <div class="section-header inline-header">ANY REMEDIAL ACTION TAKEN OR NOTES</div>
+                    <div class="remedial-subtext">Numbers should correspond to defects above</div>
+                </div>
+                <textarea class="white-box remedial-text" id="p1-remedial">N/A</textarea>
+            </div>
+            <!-- Signatures -->
+            <div class="section-box grey-bg signatures-section">
+                <div class="sig-block">
+                    <strong>Record issued by:</strong>
+                    <div class="sig-row">
+                        <div class="sig-field">
+                            <span>Signature</span>
+                            <canvas class="sig-canvas white-box" id="canvas-issued" width="200" height="40"></canvas>
+                            <button class="clear-sig no-print" onclick="clearCanvas('canvas-issued')">Clear</button>
+                        </div>
+                        <div class="sig-field">
+                            <span>Name (Capitals)</span>
+                            <input type="text" class="white-box text-center" id="sig-name-issued" value="M. Khan">
+                        </div>
+                    </div>
+                </div>
+                <div class="sig-block">
+                    <strong>Record received by:</strong> (tenant/landlord/homeowner/agent)
+                    <div class="sig-row">
+                        <div class="sig-field">
+                            <span>Signature</span>
+                            <canvas class="sig-canvas white-box" id="canvas-received" width="200" height="40"></canvas>
+                            <button class="clear-sig no-print" onclick="clearCanvas('canvas-received')">Clear</button>
+                        </div>
+                        <div class="sig-field">
+                            <span>Name (Capitals)</span>
+                            <input type="text" class="white-box" id="sig-name-received">
+                        </div>
+                    </div>
+                </div>
+                <div class="attention-box">
+                    <div class="att-title">ATTENTION</div>
+                    <div class="att-text">Next safety check<br>due by:</div>
+                    <input type="text" class="att-date" id="p1-next-due" value="12/07/2027">
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Banner -->
+        <div class="footer-banner">
+            This record can be used to document the outcomes of the checks and tests required by The Gas Safety (Installation and Use) Regulations. Some of the outcomes are as a result of visual inspection only and are recorded as appropriate. Unless specifically recorded no detailed inspection of the flue lining, construction or integrity has been performed
+        </div>
+
+        <!-- Page Footer -->
+        <div class="page-footer">
+            <div class="left-footer">Produced Using Gas Cert, Gas Certificate Software @iCertifi</div>
+            <div class="right-footer">Report pages <strong>1</strong> of <strong>2</strong></div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page-2">
+        
+        <div class="p2-header">
+            <strong>Certificate Reference:</strong> <input type="text" id="p2-cert-ref" class="invisible-input" value="64678627. 75 B Friary Road">
+        </div>
+
+        <!-- Massive Appliance Table -->
+        <table class="appliance-table">
+            <thead>
+                <tr class="table-header-black">
+                    <th colspan="16"></th>
+                </tr>
+                <tr class="table-header-grey">
+                    <th>Appliance<br>Number</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Manufacturer</th>
+                    <th>Model</th>
+                    <th>Owned by<br>Landlord/<br>homeowner?</th>
+                    <th>Inspected<br>Yes/No?</th>
+                    <th>Type of Flue</th>
+                    <th>Operating<br>pressure in<br>mbar and/or<br>heat input kW/<br>h or Btu/h</th>
+                    <th>Operation of<br>safety<br>device(s)<br>Pass/Fail or<br>N/A</th>
+                    <th>Ventilation<br>Satisfactory<br>Yes/No</th>
+                    <th>Visual<br>condition of<br>flue &<br>termination<br>Pass/Fail N/A</th>
+                    <th>Flue<br>operation<br>checks Pass/<br>Fail/N/A</th>
+                    <th>Combustion<br>analyser<br>reading<br>(if<br>applicable)</th>
+                    <th>Serviced<br>Yes/No?</th>
+                    <th>Safe to use<br>Yes/No?</th>
+                </tr>
+            </thead>
+            <tbody id="appliance-body">
+                <!-- Row 1 -->
+                <tr class="app-row white-row">
+                    <td><input type="text" id="app1-num" value="1"></td>
+                    <td><input type="text" id="app1-loc" value="Kitchen"></td>
+                    <td><input type="text" id="app1-type" value="Boiler"></td>
+                    <td><input type="text" id="app1-man" value="Worcester"></td>
+                    <td><input type="text" id="app1-mod" value="Greenstar"></td>
+                    <td><input type="text" id="app1-own" value="Yes"></td>
+                    <td><input type="text" id="app1-ins" value="Yes"></td>
+                    <td><input type="text" id="app1-flue" value="RS"></td>
+                    <td><input type="text" id="app1-pres" value="20 Mbar"></td>
+                    <td><input type="text" id="app1-op" value="Pass"></td>
+                    <td><input type="text" id="app1-vent" value="Yes"></td>
+                    <td><input type="text" id="app1-vis" value="Pass"></td>
+                    <td><input type="text" id="app1-flueop" value="Pass"></td>
+                    <td><input type="text" id="app1-comb" value=".0009"></td>
+                    <td><input type="text" id="app1-serv" value="No"></td>
+                    <td><input type="text" id="app1-safe" value="Yes"></td>
+                </tr>
+                <tr class="alarm-row">
+                    <td colspan="3" class="alarm-cell">
+                        <table class="alarm-table">
+                            <tr class="black-bg"><th colspan="3"></th></tr>
+                            <tr class="grey-bg">
+                                <th>Approved CO<br>alarm fitted?</th>
+                                <th>Is CO alarm<br>In Date?</th>
+                                <th>CO alarm test<br>satisfactory?</th>
+                            </tr>
+                            <tr class="white-row">
+                                <td><input type="text" id="app1-al1" value="Yes"></td>
+                                <td><input type="text" id="app1-al2" value="Yes"></td>
+                                <td><input type="text" id="app1-al3" value="Yes"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="13"></td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="app-row white-row">
+                    <td><input type="text" id="app2-num"></td>
+                    <td><input type="text" id="app2-loc"></td>
+                    <td><input type="text" id="app2-type"></td>
+                    <td><input type="text" id="app2-man"></td>
+                    <td><input type="text" id="app2-mod"></td>
+                    <td><input type="text" id="app2-own"></td>
+                    <td><input type="text" id="app2-ins"></td>
+                    <td><input type="text" id="app2-flue"></td>
+                    <td><input type="text" id="app2-pres"></td>
+                    <td><input type="text" id="app2-op"></td>
+                    <td><input type="text" id="app2-vent"></td>
+                    <td><input type="text" id="app2-vis"></td>
+                    <td><input type="text" id="app2-flueop"></td>
+                    <td><input type="text" id="app2-comb"></td>
+                    <td><input type="text" id="app2-serv"></td>
+                    <td><input type="text" id="app2-safe"></td>
+                </tr>
+                <tr class="alarm-row">
+                    <td colspan="3" class="alarm-cell">
+                        <table class="alarm-table">
+                            <tr class="black-bg"><th colspan="3"></th></tr>
+                            <tr class="grey-bg">
+                                <th>Approved CO<br>alarm fitted?</th>
+                                <th>Is CO alarm<br>In Date?</th>
+                                <th>CO alarm test<br>satisfactory?</th>
+                            </tr>
+                            <tr class="white-row">
+                                <td><input type="text" id="app2-al1"></td>
+                                <td><input type="text" id="app2-al2"></td>
+                                <td><input type="text" id="app2-al3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="13"></td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="app-row white-row">
+                    <td><input type="text" id="app3-num"></td>
+                    <td><input type="text" id="app3-loc"></td>
+                    <td><input type="text" id="app3-type"></td>
+                    <td><input type="text" id="app3-man"></td>
+                    <td><input type="text" id="app3-mod"></td>
+                    <td><input type="text" id="app3-own"></td>
+                    <td><input type="text" id="app3-ins"></td>
+                    <td><input type="text" id="app3-flue"></td>
+                    <td><input type="text" id="app3-pres"></td>
+                    <td><input type="text" id="app3-op"></td>
+                    <td><input type="text" id="app3-vent"></td>
+                    <td><input type="text" id="app3-vis"></td>
+                    <td><input type="text" id="app3-flueop"></td>
+                    <td><input type="text" id="app3-comb"></td>
+                    <td><input type="text" id="app3-serv"></td>
+                    <td><input type="text" id="app3-safe"></td>
+                </tr>
+                <tr class="alarm-row">
+                    <td colspan="3" class="alarm-cell">
+                        <table class="alarm-table">
+                            <tr class="black-bg"><th colspan="3"></th></tr>
+                            <tr class="grey-bg">
+                                <th>Approved CO<br>alarm fitted?</th>
+                                <th>Is CO alarm<br>In Date?</th>
+                                <th>CO alarm test<br>satisfactory?</th>
+                            </tr>
+                            <tr class="white-row">
+                                <td><input type="text" id="app3-al1"></td>
+                                <td><input type="text" id="app3-al2"></td>
+                                <td><input type="text" id="app3-al3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="13"></td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr class="app-row white-row">
+                    <td><input type="text" id="app4-num"></td>
+                    <td><input type="text" id="app4-loc"></td>
+                    <td><input type="text" id="app4-type"></td>
+                    <td><input type="text" id="app4-man"></td>
+                    <td><input type="text" id="app4-mod"></td>
+                    <td><input type="text" id="app4-own"></td>
+                    <td><input type="text" id="app4-ins"></td>
+                    <td><input type="text" id="app4-flue"></td>
+                    <td><input type="text" id="app4-pres"></td>
+                    <td><input type="text" id="app4-op"></td>
+                    <td><input type="text" id="app4-vent"></td>
+                    <td><input type="text" id="app4-vis"></td>
+                    <td><input type="text" id="app4-flueop"></td>
+                    <td><input type="text" id="app4-comb"></td>
+                    <td><input type="text" id="app4-serv"></td>
+                    <td><input type="text" id="app4-safe"></td>
+                </tr>
+                <tr class="alarm-row">
+                    <td colspan="3" class="alarm-cell">
+                        <table class="alarm-table">
+                            <tr class="black-bg"><th colspan="3"></th></tr>
+                            <tr class="grey-bg">
+                                <th>Approved CO<br>alarm fitted?</th>
+                                <th>Is CO alarm<br>In Date?</th>
+                                <th>CO alarm test<br>satisfactory?</th>
+                            </tr>
+                            <tr class="white-row">
+                                <td><input type="text" id="app4-al1"></td>
+                                <td><input type="text" id="app4-al2"></td>
+                                <td><input type="text" id="app4-al3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="13"></td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr class="app-row white-row">
+                    <td><input type="text" id="app5-num"></td>
+                    <td><input type="text" id="app5-loc"></td>
+                    <td><input type="text" id="app5-type"></td>
+                    <td><input type="text" id="app5-man"></td>
+                    <td><input type="text" id="app5-mod"></td>
+                    <td><input type="text" id="app5-own"></td>
+                    <td><input type="text" id="app5-ins"></td>
+                    <td><input type="text" id="app5-flue"></td>
+                    <td><input type="text" id="app5-pres"></td>
+                    <td><input type="text" id="app5-op"></td>
+                    <td><input type="text" id="app5-vent"></td>
+                    <td><input type="text" id="app5-vis"></td>
+                    <td><input type="text" id="app5-flueop"></td>
+                    <td><input type="text" id="app5-comb"></td>
+                    <td><input type="text" id="app5-serv"></td>
+                    <td><input type="text" id="app5-safe"></td>
+                </tr>
+                <tr class="alarm-row">
+                    <td colspan="3" class="alarm-cell">
+                        <table class="alarm-table">
+                            <tr class="black-bg"><th colspan="3"></th></tr>
+                            <tr class="grey-bg">
+                                <th>Approved CO<br>alarm fitted?</th>
+                                <th>Is CO alarm<br>In Date?</th>
+                                <th>CO alarm test<br>satisfactory?</th>
+                            </tr>
+                            <tr class="white-row">
+                                <td><input type="text" id="app5-al1"></td>
+                                <td><input type="text" id="app5-al2"></td>
+                                <td><input type="text" id="app5-al3"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="13"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Page 2 Footer -->
+        <div class="page-footer p2-footer">
+            <div class="p2-company-name" id="p2-footer-company">M K Heating Ltd</div>
+            <div class="p2-footer-right">
+                <div>Produced Using Gas Cert, Gas Certificate Software @iCertifi</div>
+                <div>Report pages including inspection and test schedules <strong>2</strong> of <strong>2</strong></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
