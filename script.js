@@ -568,6 +568,7 @@ function compileAndShowPDFPreview() {
             <h2 class="cert-subtitle">LANDLORD/HOMEOWNER GAS SAFETY RECORD</h2>
         </div>
 
+        <div class="cert-body">
         <div class="cert-details-row">
             <div class="cert-details-col">
                 <div class="cert-box-header">Details of Landlord/Homeowner (or agent where appropriate)</div>
@@ -688,6 +689,7 @@ function compileAndShowPDFPreview() {
             <span>Produced Using Gas Cert, Gas Certificate Software &copy;iCertifi</span>
             <span>Report pages 1 of 2</span>
         </div>
+        </div>
     `;
 
     // Page 2
@@ -696,6 +698,13 @@ function compileAndShowPDFPreview() {
     p2.innerHTML = `
         <div class="cert-p2-header"><strong>Certificate Reference:</strong> ${document.getElementById('w-cert-no').value}</div>
         <table class="cert-appliance-table">
+            <colgroup>
+                <col style="width:3.81%"><col style="width:11.34%"><col style="width:11.58%">
+                <col style="width:12.19%"><col style="width:9.2%"><col style="width:4.46%">
+                <col style="width:4.41%"><col style="width:4.61%"><col style="width:4.59%">
+                <col style="width:4.42%"><col style="width:4.07%"><col style="width:4.37%">
+                <col style="width:4.18%"><col style="width:4.17%"><col style="width:3.89%"><col style="width:3.78%">
+            </colgroup>
             <thead>
                 <tr class="cert-appliance-blackbar"><th colspan="16"></th></tr>
                 <tr class="cert-appliance-headrow">
