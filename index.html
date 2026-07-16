@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GasCert Pro - Certificate Management System</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar no-print">
+            <div class="sidebar-brand">
+                <span class="brand-icon">🔥</span>
+                <h2>GasCert <span class="brand-pro">Pro</span></h2>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active" data-target="panel-dashboard">🏠 Dashboard</a>
+                <a href="#" class="menu-item" data-target="panel-new-cert" onclick="initNewCertificateForm()">➕ New Certificate</a>
+                <a href="#" class="menu-item" data-target="panel-all-certs">📄 All Certificates</a>
+                <a href="#" class="menu-item" data-target="panel-customers" onclick="renderCustomersTable()">👥 Customers</a>
+                <a href="#" class="menu-item" data-target="panel-properties" onclick="renderPropertiesTable()">🏠 Properties</a>
+                <a href="#" class="menu-item" data-target="panel-appliances" onclick="renderAppliancesLibrary()">🔥 Appliances Library</a>
+                <a href="#" class="menu-item" data-target="panel-engineers" onclick="renderEngineersTable()">👨‍🔧 Engineers</a>
+                <a href="#" class="menu-item" data-target="panel-settings">⚙ Settings</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-status">System Online</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Space -->
+        <main class="main-content no-print">
+
+            <!-- Top Navigation Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <h1 id="page-title">Dashboard Overview</h1>
+                </div>
+                <div class="top-bar-right">
+                    <span class="quick-status">Database: LocalStorage (Active)</span>
+                    <button class="btn btn-primary" onclick="switchPanel('panel-new-cert'); initNewCertificateForm();">⚡ Quick Cert</button>
+                </div>
+            </header>
+
+            <!-- PANEL: DASHBOARD -->
+            <section id="panel-dashboard" class="content-panel active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon yellow">📄</div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-certs">0</h3>
+                            <p>Total Certificates</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✔️</div>
+                        <div class="stat-info">
+                            <h3 id="stat-active-certs">0</h3>
+                            <p>Active Records</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">📂</div>
+                        <div class="stat-info">
+                            <h3 id="stat-drafts">0</h3>
+                            <p>Saved Drafts</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">⚠️</div>
+                        <div class="stat-info">
+                            <h3 id="stat-expiring">0</h3>
+                            <p>Expiring Soon</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-split">
+                    <!-- Recent Activity -->
+                    <div class="split-card">
+                        <h3>Recent Certificates</h3>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ref</th>
+                                        <th>Client</th>
+                                        <th>Installation Address</th>
+                                        <th>Expiry</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-table">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Quick Tasks & Auto-Actions -->
+                    <div class="split-card">
+                        <h3>Quick Administration Tasks</h3>
+                        <div class="quick-actions-panel">
+                            <button class="btn btn-secondary" onclick="seedDemoDatabase()">🧪 Populate Mock System Data</button>
+                            <button class="btn btn-danger" onclick="clearAllData()">🗑️ Reset Database</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL: NEW CERTIFICATE (WIZARD) -->
+            <section id="panel-new-cert" class="content-panel">
+                <div class="wizard-container">
+                    <div class="wizard-steps-header">
+                        <div class="step-indicator active" data-step="1">1. Parties & Location</div>
+                        <div class="step-indicator" data-step="2">2. Appliances List</div>
+                        <div class="step-indicator" data-step="3">3. Pipework & Diagnostics</div>
+                        <div class="step-indicator" data-step="4">4. Defect Registry</div>
+                        <div class="step-indicator" data-step="5">5. Authorizations</div>
+                        <div class="step-indicator" data-step="6">6. Generate PDF</div>
+                    </div>
+
+                    <div class="wizard-content">
+                        <!-- Step 1: Customer, Property, Engineer -->
+                        <div class="wizard-step-panel active" id="w-step-1">
+                            <div class="form-grid">
+                                <div class="form-group autocomplete-container">
+                                    <label>Customer Name Lookup</label>
+                                    <input type="text" id="w-cust-search" placeholder="Type customer name (e.g., Wentworth)..." autocomplete="off">
+                                    <div id="w-cust-results" class="autocomplete-dropdown"></div>
+                                    <textarea id="w-cust-address" placeholder="Customer billing address" rows="3"></textarea>
+                                    <input type="text" id="w-cust-postcode" placeholder="Postcode">
+                                </div>
+                                <div class="form-group autocomplete-container">
+                                    <label>Property Address Lookup</label>
+                                    <input type="text" id="w-prop-search" placeholder="Type street address..." autocomplete="off">
+                                    <div id="w-prop-results" class="autocomplete-dropdown"></div>
+                                    <textarea id="w-prop-address" placeholder="Installation address" rows="3"></textarea>
+                                    <input type="text" id="w-prop-postcode" placeholder="Postcode">
+                                </div>
+                                <div class="form-group autocomplete-container">
+                                    <label>Assign Engineer</label>
+                                    <input type="text" id="w-eng-search" placeholder="Select engineer..." autocomplete="off">
+                                    <div id="w-eng-results" class="autocomplete-dropdown"></div>
+                                    <input type="text" id="w-cert-no" placeholder="Certificate Serial No / Reference">
+                                    <input type="date" id="w-cert-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Details of Work Carried Out</label>
+                                    <textarea id="w-work-carried-out" rows="5" placeholder="Enter N/A if no additional work was carried out"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Appliances Library & Matrix -->
+                        <div class="wizard-step-panel" id="w-step-2">
+                            <div class="appliance-library-bar">
+                                <strong>Quick-Insert Template:</strong>
+                                <button class="btn btn-secondary btn-sm" onclick="addApplianceFromTemplate('Boiler')">🔥 Boiler</button>
+                                <button class="btn btn-secondary btn-sm" onclick="addApplianceFromTemplate('Cooker')">🍳 Cooker</button>
+                                <button class="btn btn-secondary btn-sm" onclick="addApplianceFromTemplate('Gas Hob')">🔥 Gas Hob</button>
+                                <button class="btn btn-secondary btn-sm" onclick="addApplianceFromTemplate('Fire')">🪵 gas Fire</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="wizard-table" id="wizard-appliance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Location</th>
+                                            <th>Type</th>
+                                            <th>Make</th>
+                                            <th>Model</th>
+                                            <th>Owned?</th>
+                                            <th>Inspected?</th>
+                                            <th>CO Alarm Fitted?</th>
+                                            <th>CO Alarm In Date?</th>
+                                            <th>CO Alarm OK?</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="wizard-appliance-tbody">
+                                        <!-- Dynamic appliance rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="btn btn-secondary mt-10" onclick="addBlankApplianceRow()">➕ Add Custom Appliance</button>
+                        </div>
+
+                        <!-- Step 3: Pipework & Safety Checks -->
+                        <div class="wizard-step-panel" id="w-step-3">
+                            <h3>Gas Installation Pipework Status</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Pipework visual inspection</label>
+                                    <select id="w-pipe-visual"><option value="✓">Pass (✓)</option><option value="N/A">N/A</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Outcome of gas supply pipework visual inspection</label>
+                                    <select id="w-pipe-outcome"><option value="✓">Pass (✓)</option><option value="N/A">N/A</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Is the Emergency Control Valve access satisfactory?</label>
+                                    <select id="w-ecv-satisfactory"><option value="✓">Pass (✓)</option><option value="N/A">N/A</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Outcome of gas tightness test?</label>
+                                    <select id="w-tightness-test"><option value="✓">Pass (✓)</option><option value="N/A">N/A</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Is protective equipotential bonding satisfactory?</label>
+                                    <select id="w-bonding-satisfactory"><option value="✓">Pass (✓)</option><option value="N/A">N/A</option></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Defects & Warning Notices -->
+                        <div class="wizard-step-panel" id="w-step-4">
+                            <h3>Defects Found & Warning Notices</h3>
+                            <div class="defects-wizard-list" id="defects-container">
+                                <!-- Dynamic defect lines 1 to 5 matching PDF structure -->
+                            </div>
+                            <div class="form-group mt-10">
+                                <label>Remedial Action Taken / General Notes</label>
+                                <textarea id="w-remedial-notes" rows="4" placeholder="Enter notes here..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Signatures & Next Expiry -->
+                        <div class="wizard-step-panel" id="w-step-5">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Next Safety Check Expiry Date</label>
+                                    <input type="date" id="w-next-due-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Issued By Signature</label>
+                                    <canvas id="wizard-sig-canvas" class="signature-canvas-pad" width="300" height="100"></canvas>
+                                    <button class="btn btn-secondary btn-sm" onclick="clearWizardCanvas()">Reset Canvas</button>
+                                </div>
+                                <div class="form-group">
+                                    <label>Record Received By (Tenant/Landlord/Agent) - Name</label>
+                                    <input type="text" id="w-received-name" placeholder="Left blank until physically signed on-site">
+                                    <p class="settings-sub">The received-by signature box is left blank on the certificate for the occupant to sign in person.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 6: Visual Preview Compile -->
+                        <div class="wizard-step-panel" id="w-step-6">
+                            <div class="render-info-card">
+                                <h3>Data Compiled Successfully</h3>
+                                <p>Your inputs have been populated directly into the landscape vector design output. Ready to preview and output to PDF.</p>
+                                <button class="btn btn-primary btn-lg" onclick="compileAndShowPDFPreview()">Run A4 Landscape Preview</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-footer">
+                        <button class="btn btn-secondary" id="btn-wizard-prev" onclick="navigateWizard(-1)">Back</button>
+                        <button class="btn btn-primary" id="btn-wizard-next" onclick="navigateWizard(1)">Next Step</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL: ALL CERTIFICATES -->
+            <section id="panel-all-certs" class="content-panel">
+                <div class="table-header-controls">
+                    <input type="text" id="cert-search-query" class="search-box-input" placeholder="Search by name, address, cert number..." oninput="filterCertTable()">
+                    <button class="btn btn-secondary" onclick="exportCertificatesCSV()">Export CSV Database</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Certificate Number</th>
+                                <th>Customer</th>
+                                <th>Installation Property</th>
+                                <th>Issue Date</th>
+                                <th>Next Due Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-certs-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL: CUSTOMERS -->
+            <section id="panel-customers" class="content-panel">
+                <div class="crud-form-row">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="new-cust-name" placeholder="e.g. J. Smith">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing Address</label>
+                        <input type="text" id="new-cust-address" placeholder="Address line">
+                    </div>
+                    <div class="form-group">
+                        <label>Postcode</label>
+                        <input type="text" id="new-cust-postcode" placeholder="Postcode">
+                    </div>
+                    <button class="btn btn-primary" onclick="addCustomer()">➕ Add Customer</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Name</th><th>Address</th><th>Postcode</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="customers-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL: PROPERTIES -->
+            <section id="panel-properties" class="content-panel">
+                <div class="crud-form-row">
+                    <div class="form-group">
+                        <label>Installation Address</label>
+                        <input type="text" id="new-prop-address" placeholder="Address line">
+                    </div>
+                    <div class="form-group">
+                        <label>Postcode</label>
+                        <input type="text" id="new-prop-postcode" placeholder="Postcode">
+                    </div>
+                    <button class="btn btn-primary" onclick="addProperty()">➕ Add Property</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Address</th><th>Postcode</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="properties-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL: APPLIANCES LIBRARY (auto-aggregated from saved certificates) -->
+            <section id="panel-appliances" class="content-panel">
+                <p class="settings-sub">Automatically compiled from every appliance recorded on a saved certificate.</p>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Type</th><th>Manufacturer</th><th>Model</th><th>Times Recorded</th></tr>
+                        </thead>
+                        <tbody id="appliances-library-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL: ENGINEERS -->
+            <section id="panel-engineers" class="content-panel">
+                <div class="crud-form-row">
+                    <div class="form-group">
+                        <label>Engineer Name</label>
+                        <input type="text" id="new-eng-name" placeholder="e.g. M. Khan">
+                    </div>
+                    <div class="form-group">
+                        <label>Gas Safe License No.</label>
+                        <input type="text" id="new-eng-license" placeholder="License number">
+                    </div>
+                    <div class="form-group">
+                        <label>Registration No.</label>
+                        <input type="text" id="new-eng-regno" placeholder="Reg number">
+                    </div>
+                    <div class="form-group">
+                        <label>License Expires</label>
+                        <input type="date" id="new-eng-expiry">
+                    </div>
+                    <button class="btn btn-primary" onclick="addEngineer()">➕ Add Engineer</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Name</th><th>License</th><th>Reg No.</th><th>License Expires</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="engineers-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL: SETTINGS & DYNAMIC AUTOMATIONS -->
+            <section id="panel-settings" class="content-panel">
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>Registered Business Profile</h3>
+                        <div class="form-group">
+                            <label>Default Registered Company Name</label>
+                            <input type="text" id="cfg-company-name" value="M K Heating Ltd" onchange="saveSettings()">
+                        </div>
+                        <div class="form-group">
+                            <label>Office Address</label>
+                            <textarea id="cfg-company-address" rows="3" onchange="saveSettings()">127 Woodland Road&#10;Ilford&#10;Essex</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Postcode</label>
+                            <input type="text" id="cfg-company-postcode" value="IG1 1JP" onchange="saveSettings()">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" id="cfg-company-phone" placeholder="Office phone number" onchange="saveSettings()">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" id="cfg-company-email" placeholder="Office email address" onchange="saveSettings()">
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3>Column Automation Rules (Rules Engine)</h3>
+                        <p class="settings-sub">Set rules for automatically filling test results when certain appliance types are chosen:</p>
+                        <div id="rules-container">
+                            <!-- Dynamic Rules List -->
+                        </div>
+                        <button class="btn btn-secondary btn-sm mt-10" onclick="addNewAutomationRuleRow()">➕ Add New Logic Rule</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- PERSISTENT PRINT ENGINE / PDF RENDER target -->
+    <div id="print-canvas-target" class="only-print">
+        <!-- RENDERED LANDSCAPE TARGET OF PAGES 1 & 2 -->
+    </div>
+
+</body>
+<script src="script.js"></script>
+</html>
